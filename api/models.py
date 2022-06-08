@@ -6,7 +6,7 @@ class BaseModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        abstract=True
+        abstract = True
 
 
 class User(AbstractBaseUser, BaseModel):
@@ -14,13 +14,11 @@ class User(AbstractBaseUser, BaseModel):
     last_login = None
     is_staff = None
     is_superuser = None
-    password = None
 
     email = models.EmailField(max_length=100, unique=True)
-    password_digest = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['password']
 
     class Meta:
         db_table = 'users'
