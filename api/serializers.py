@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from api.models import User
+from api.models import User, Post
 from django.contrib.auth.hashers import make_password
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,7 +14,9 @@ class UserSerializer(serializers.ModelSerializer):
         return User.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.password = make_password(validated_data['password'])
+        validated_data['password'] = make_password(validated_data['password'])
+        for field in validated_data:
+            setattr(instance, field, validated_data[field])
         instance.save()
         return instance
 
@@ -23,3 +26,9 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Password invalid! password has at least 6 characters and 1 special character')
         return value
+
+
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'title', 'content', 'user', 'created_at', 'updated_at']
